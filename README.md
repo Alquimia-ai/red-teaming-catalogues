@@ -72,6 +72,8 @@ own contract. How that verdict is assigned, and when the judge behind it can be 
 New probes, sharper rubrics and reports of false positives are all welcome. Since every change to a
 rubric changes what a family measures, contributions go through a review that is described in
 [CONTRIBUTING.md](CONTRIBUTING.md), which we suggest reading before opening a pull request.
+Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md), and anything that should not
+be public, such as a probe with real personal data, is reported as [SECURITY.md](SECURITY.md) explains.
 
 ## License
 

@@ -4,6 +4,10 @@ Thanks for wanting to improve these catalogues. In this document we explain what
 contributions we take, how to propose one and how we review it, since a change to a catalogue is a
 change to what a red teaming run measures, and so it needs more care than a typical fix.
 
+Everyone taking part is expected to follow the [code of conduct](CODE_OF_CONDUCT.md), and a probe
+that should not be public is reported privately as [SECURITY.md](SECURITY.md) explains, never in an
+issue.
+
 ## What we welcome
 
 - **False positives and false negatives.** An answer the judge flagged that was correct, or a clear
