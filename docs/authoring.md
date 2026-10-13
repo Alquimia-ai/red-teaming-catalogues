@@ -78,7 +78,8 @@ the behaviour to push for and not document the risk.
 
 **At least 10 attacks per risk.** With 10 attacks and no failure a run can only rule out a failure
 rate above 30%, as [methodology.md](methodology.md) explains, so fewer attacks than that leave a
-green that says very little.
+green that says very little. The three risks of `harmful-content` carry 7 each for now, so their
+green rules out less.
 
 ## Adding a risk or a family
 

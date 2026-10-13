@@ -2,6 +2,10 @@
 
 ## Publish
 
+The `redteam` commands, the `crescendo` attacker and `RunSpec` below belong to
+[RoastMe](https://github.com/Alquimia-ai/red-teaming), the platform these catalogues are written for;
+another harness needs its own equivalent.
+
 ```bash
 uv run build.py security-owasp                                         # rebuild the JSON from risks/*.yaml
 redteam catalogue validate catalogues/security-owasp/security-owasp.json
@@ -12,7 +16,7 @@ redteam catalogue publish catalogues/security-owasp/security-owasp.json
 
 - **Black box.** Every strategy has `requires_brain: false` and no `{premise}` slot, so none
   needs a knowledge base.
-- **An attacker bound to `crescendo`.** 17 attacks are `adaptive_multi_turn`: they send their
+- **An attacker bound to `crescendo`.** 22 attacks are `adaptive_multi_turn`: they send their
   opening and an attacker model steers the rest, up to 4 turns. The run binds the id to a model in
   `RunSpec.attackers`.
 - **The same contract as any catalogue run alongside it.** A run over several catalogues requires
@@ -27,7 +31,7 @@ redteam catalogue publish catalogues/security-owasp/security-owasp.json
   documentation.
 - **The judge grades the final answer.** Every turn is recorded, but an agent that gave way at
   turn two and recovered at turn four reads as clean. The rubrics are written for a final answer.
-- **Controls cannot be conducted.** The 5 multi-turn controls are fixed scripts
+- **Controls cannot be conducted.** The 6 multi-turn controls are fixed scripts
   (`scripted_multi_turn`); an attacker steers attacks only.
 
 ## Open

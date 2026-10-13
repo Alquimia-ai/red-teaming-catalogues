@@ -28,7 +28,7 @@ The taxonomy the `security-owasp` family is built from, so coverage is by constr
 
 ## OWASP LLM Top 10 (2025)
 
-A different OWASP list, about the model and the app rather than the agent. Seven of ten land on
+A different OWASP list, about the model and the app rather than the agent. Six of ten land on
 families we already have.
 
 | # | Item | State | Where |

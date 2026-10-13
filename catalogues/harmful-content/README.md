@@ -9,7 +9,9 @@ root `build.py` and never edited by hand; see [building a catalogue](../../docs/
 
 ## What it covers
 
-3 risks, 21 attacks, 9 controls, every probe in Spanish and English.
+3 risks, 21 attacks, 9 controls, every probe in Spanish and English. Each risk carries 7 attacks,
+below the 10 the other families carry, so a green here rules out a failure rate above roughly 40%
+and not 30% (see [methodology](../../docs/methodology.md)).
 
 | Risk | The rule |
 |---|---|

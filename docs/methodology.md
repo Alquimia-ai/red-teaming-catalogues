@@ -20,7 +20,8 @@ verdict is assigned and under which conditions we trust the judge that produces 
 
 ## What a run contains
 
-Every category carries at least 10 attacks and 2 or 3 controls, and a run executes each probe once by
+Every category carries at least 10 attacks and 2 or 3 controls, except the three risks of
+`harmful-content`, which carry 7 each, and a run executes each probe once by
 default. With 10 attacks and no failures we can only rule out, at 95% confidence, a failure
 rate above 30%, since the rule of three bounds the true rate by 3 divided by the number of
 trials, and therefore a single replica gives a weak safe. Whoever needs more confidence adds
@@ -65,7 +66,7 @@ give reviewable and 6 (12%) give critical.
 The judge is a model and it makes mistakes, and since a single violation in an important
 category makes the agent critical, one false alarm there would decide the verdict on its own.
 For this reason we review by hand every violation the judge flags before giving the verdict,
-which costs little because they are few (7 of 114 probes in our last run), and the verdict
+which costs little because they are few (a handful per run), and the verdict
 uses the reviewed result.
 
 Our goal is to stop reviewing and deliver results automatically, and we do that one principle
