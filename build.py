@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import pathlib
 import sys
 
@@ -43,13 +44,30 @@ def available(family: str) -> list[str]:
     return sorted(p.stem for p in (ROOT / family / "risks").glob("*.yaml"))
 
 
+def parse_ids(text: str) -> list[str]:
+    ids = [r.strip() for r in text.split(",") if r.strip()]
+    if not ids:
+        sys.exit("--risks needs at least one risk id")
+    repeated = sorted({r for r in ids if ids.count(r) > 1})
+    if repeated:
+        sys.exit(f"risks given more than once: {repeated}")
+    return ids
+
+
 def parse_weights(text: str) -> dict[str, float]:
     out: dict[str, float] = {}
     for pair in text.split(","):
         name, _, value = pair.partition("=")
-        if not value:
+        name = name.strip()
+        try:
+            weight = float(value)
+        except ValueError:
             sys.exit(f"--weights wants name=number pairs, got {pair!r}")
-        out[name.strip()] = float(value)
+        if not math.isfinite(weight) or weight <= 0:
+            sys.exit(f"--weights must be positive numbers, got {pair!r}")
+        if name in out:
+            sys.exit(f"--weights gives {name!r} more than once")
+        out[name] = weight
     return out
 
 
@@ -62,26 +80,47 @@ def strategy(s: dict, plugin: str | None) -> dict:
 
 def load(family: str, pid: str) -> dict:
     path = ROOT / family / "risks" / f"{pid}.yaml"
-    d = yaml.safe_load(path.read_text(encoding="utf-8"))
+    where = path.relative_to(ROOT.parent)
+    try:
+        d = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as e:
+        sys.exit(f"{where}: not valid YAML: {e}")
+    if not isinstance(d, dict):
+        sys.exit(f"{where}: expected a mapping with plugin, principle, attacks and controls")
     problems = []
     for key in ("plugin", "principle", "attacks", "controls"):
         if key not in d:
             problems.append(f"missing `{key}`")
+    if not problems and not d["attacks"]:
+        problems.append("`attacks` is empty")
     if not problems:
-        if d["plugin"]["id"] != pid:
-            problems.append(f"plugin id {d['plugin']['id']!r} does not match the file name")
-        for s in d["attacks"] + d["controls"]:
-            it = s["interaction"]
-            if it["mode"] not in MODES:
-                problems.append(f"{s['id']}: unknown mode {it['mode']!r}")
-            texts = it["messages"] if "messages" in it else [it.get("prompt") or it.get("opening") or {}]
-            if any(set(t) != LANGUAGES for t in texts):
-                problems.append(f"{s['id']}: every message needs exactly {sorted(LANGUAGES)}")
-        for s in d["controls"]:
-            if s["interaction"]["mode"] == "adaptive_multi_turn":
-                problems.append(f"{s['id']}: a control cannot be adaptive, the attacker only steers attacks")
+        for key in ("id", "name", "description"):
+            if key not in d["plugin"]:
+                problems.append(f"plugin is missing `{key}`")
+        for key in ("id", "rubric"):
+            if key not in d["principle"]:
+                problems.append(f"principle is missing `{key}`")
+        for i, s in enumerate((d["attacks"] or []) + (d["controls"] or [])):
+            missing = [k for k in ("id", "name", "description", "interaction") if k not in s]
+            if missing:
+                problems.append(f"strategy {s.get('id', f'#{i + 1}')} is missing {missing}")
     if problems:
-        sys.exit(f"{path.relative_to(ROOT.parent)}: " + "; ".join(problems))
+        sys.exit(f"{where}: " + "; ".join(problems))
+    d["controls"] = d["controls"] or []
+    if d["plugin"]["id"] != pid:
+        problems.append(f"plugin id {d['plugin']['id']!r} does not match the file name")
+    for s in d["attacks"] + d["controls"]:
+        it = s["interaction"]
+        if it.get("mode") not in MODES:
+            problems.append(f"{s['id']}: unknown mode {it.get('mode')!r}")
+        texts = it.get("messages") or [it.get("prompt") or it.get("opening") or {}]
+        if any(not isinstance(t, dict) or set(t) != LANGUAGES for t in texts):
+            problems.append(f"{s['id']}: every message needs exactly {sorted(LANGUAGES)}")
+    for s in d["controls"]:
+        if s["interaction"].get("mode") == "adaptive_multi_turn":
+            problems.append(f"{s['id']}: a control cannot be adaptive, the attacker only steers attacks")
+    if problems:
+        sys.exit(f"{where}: " + "; ".join(problems))
     return d
 
 
@@ -151,6 +190,8 @@ def main() -> None:
     args = ap.parse_args()
 
     if args.check:
+        if args.family or args.risks or args.weights or args.name or args.out or args.list:
+            sys.exit("--check takes no other argument")
         check(); return
 
     if args.family is None:
@@ -168,11 +209,13 @@ def main() -> None:
     if args.list:
         print("\n".join(have)); return
 
-    given = parse_weights(args.weights) if args.weights else None
+    if args.risks is not None and args.weights is not None:
+        sys.exit("--weights already names the risks, so use it or --risks, not both")
+    given = parse_weights(args.weights) if args.weights is not None else None
     if given:
         chosen = list(given)
-    elif args.risks:
-        chosen = [r.strip() for r in args.risks.split(",")]
+    elif args.risks is not None:
+        chosen = parse_ids(args.risks)
     else:
         chosen = have
     unknown = [r for r in chosen if r not in have]
@@ -182,6 +225,7 @@ def main() -> None:
     weights = weigh(chosen, given)
     doc = build(args.family, chosen, weights, args.name or args.family)
     out = args.out or ROOT / args.family / f"{args.family}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(render(doc), encoding="utf-8")
     attacks = sum(s["plugin"] is not None for s in doc["strategies"])
     print(f"{out}: {len(doc['plugins'])} risks, {attacks} attacks, {len(doc['strategies']) - attacks} controls")

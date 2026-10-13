@@ -51,6 +51,8 @@ Before writing anything, the script verifies that every YAML has a `plugin`, a `
 of `attacks` and a list of `controls`, that the plugin id matches the file name, that every
 interaction mode is one the platform knows, that every message carries exactly an `es` and an `en`
 version, that no control is adaptive, and that no strategy id is used twice in the family.
+It also rejects weights that are not positive numbers, a risk given twice, and `--risks` together
+with `--weights`, since the weights already name the risks.
 It does not validate the document against the platform's full schema, which is what
 `redteam catalogue validate` does before publishing in
 [RoastMe](https://github.com/Alquimia-ai/red-teaming).
