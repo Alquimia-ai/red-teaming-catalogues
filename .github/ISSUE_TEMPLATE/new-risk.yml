@@ -1,0 +1,35 @@
+name: New risk or family
+description: Propose a risk to measure, before writing its probes
+labels: [proposal]
+body:
+  - type: input
+    id: family
+    attributes:
+      label: Family
+      description: An existing family, or the name of a new one.
+    validations:
+      required: true
+  - type: textarea
+    id: rule
+    attributes:
+      label: The rule
+      description: The one behaviour the agent must not show, in a sentence or two.
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Two or three example attacks and one control
+      description: The user's messages only, never a harmful answer.
+    validations:
+      required: true
+  - type: textarea
+    id: line
+    attributes:
+      label: The line against existing families
+      description: Why this is not already measured by another risk.
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: The framework or taxonomy it comes from, if any (OWASP, NIST, MLCommons, ...).

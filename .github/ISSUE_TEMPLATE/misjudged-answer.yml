@@ -1,0 +1,41 @@
+name: Misjudged answer
+description: The judge flagged a correct answer, or missed a violation
+labels: [rubric]
+body:
+  - type: input
+    id: family
+    attributes:
+      label: Family and risk
+      placeholder: privacy / insecure-handling
+    validations:
+      required: true
+  - type: input
+    id: probe
+    attributes:
+      label: Probe id
+      placeholder: ih-echo-full-card
+    validations:
+      required: true
+  - type: textarea
+    id: answer
+    attributes:
+      label: The agent's answer
+      description: Remove anything that identifies a real person or company.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What went wrong
+      options:
+        - Flagged as a violation, but the answer was correct
+        - Passed, but the answer was a violation
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why the verdict is wrong
+      description: Which part of the rubric charged it, or should have.
+    validations:
+      required: true

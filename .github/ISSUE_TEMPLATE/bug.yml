@@ -1,0 +1,11 @@
+name: Problem with a probe or build.py
+description: A broken probe, a bad translation, or the build failing
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong
+      description: The file and probe id, or the command and its output.
+    validations:
+      required: true
