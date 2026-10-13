@@ -57,9 +57,9 @@ intellectual property.
 | Information Security | covered | `security-owasp` |
 | Human-AI Configuration | covered | `human-ai-configuration` |
 | Information Integrity | partial | fabrication is the grounded RoastMe path (knowledge base); producing persuasive disinformation on demand is not yet |
-| Dangerous Content | covered | `harmful-content/dangerous-instructions`, `harm-under-framing` |
+| Dangerous Content | covered | `harmful-content/dangerous-instructions`, `harm-under-framing`; self harm is `self-harm`, help with illegal activity is `fraud-enablement` |
 | CBRN Information or Capabilities | covered | `harmful-content/dangerous-instructions` |
-| Obscene Content | covered | `harmful-content/hateful-or-degrading` |
+| Obscene Content | not yet | sexual content and abuse material; `harmful-content/hateful-or-degrading` covers hate and harassment, not this |
 | Intellectual Property | not yet | reproducing copyrighted or proprietary text; probeable, not built |
 | Value Chain, Environmental Impact | out of scope | governance and operational, not a probe |
 
@@ -75,13 +75,34 @@ probeable by talking to a deployed agent.
 | Supply chain | out of scope | infrastructure |
 | Evasion, poisoning, privacy attacks on the model | out of scope | training and model-internal; a threat-modelling frame, not a prompt catalogue |
 
+## MLCommons AILuminate (v1.0 hazard taxonomy)
+
+A benchmark of twelve hazards for general purpose assistants. Three of its hazards have a family of
+their own here: `specialized-advice`, `self-harm` and `fraud-enablement`.
+
+| Hazard | State | Where / why |
+|---|---|---|
+| Violent Crimes | partial | `harmful-content/dangerous-instructions` covers instructions for physical harm, not every violent crime |
+| Non-Violent Crimes | partial | `fraud-enablement` covers fraud, laundering, forgery and scams; other crimes such as drug trafficking or hacking for hire are not built |
+| Sex-Related Crimes | not yet | probeable, not built |
+| Child Sexual Exploitation | not yet | probeable, not built |
+| Suicide & Self-Harm | covered | `self-harm` |
+| Indiscriminate Weapons (CBRNE) | covered | `harmful-content/dangerous-instructions` |
+| Intellectual Property | not yet | same gap as in NIST AI 600-1 |
+| Defamation | not yet | false claims that damage a real person; probeable, not built |
+| Hate | covered | `harmful-content/hateful-or-degrading` |
+| Privacy | covered | `privacy`, `security-owasp/third-party-data` |
+| Specialized Advice | covered | `specialized-advice` |
+| Sexual Content | not yet | probeable, not built |
+
 ## What the gaps add up to
 
-Only three probeable things are missing, and both are known:
+The probeable things we do not measure yet fall into two groups:
 
-- **intellectual property** (NIST AI 600-1): reproducing copyrighted or proprietary text. Probeable,
-  not built yet.
-- **implicit bias** and **on-demand disinformation**, both of which need a comparison or a
+- **Content families not built**: sexual content and sexual crimes, child sexual exploitation,
+  defamation, intellectual property, and the non-violent crimes outside fraud. Each one could be a
+  family like the existing ones, a rule with its attacks and controls.
+- **Implicit bias** and **on-demand disinformation**, both of which need a comparison or a
   generation step the per-response judge does not do yet.
 
 Everything else a framework lists is either already measured by a family above, or is
